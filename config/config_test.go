@@ -51,8 +51,8 @@ import (
 	"github.com/prometheus/prometheus/discovery/triton"
 	"github.com/prometheus/prometheus/discovery/xds"
 	"github.com/prometheus/prometheus/discovery/zookeeper"
-	"github.com/prometheus/prometheus/pkg/labels"
-	"github.com/prometheus/prometheus/pkg/relabel"
+	"github.com/prometheus/prometheus/model/labels"
+	"github.com/prometheus/prometheus/model/relabel"
 )
 
 func mustParseURL(u string) *config.URL {
