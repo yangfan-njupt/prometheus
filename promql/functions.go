@@ -14,6 +14,7 @@
 package promql
 
 import (
+	"fmt"
 	"math"
 	"regexp"
 	"sort"
@@ -64,6 +65,9 @@ func extrapolatedRate(vals []parser.Value, args parser.Expressions, enh *EvalNod
 		rangeStart = enh.Ts - durationMilliseconds(ms.Range+vs.Offset)
 		rangeEnd   = enh.Ts - durationMilliseconds(vs.Offset)
 	)
+
+	fmt.Println("extrapolatedRate first", samples.Points[0].T, samples.Points[0].V, samples.Points[0].H) // TODO(codesome): Why is the first histogram nil here?
+	fmt.Println("extrapolatedRate last", samples.Points[len(samples.Points)-1].T, samples.Points[len(samples.Points)-1].V, samples.Points[len(samples.Points)-1].H)
 
 	// No sense in trying to compute a rate without at least two points. Drop
 	// this Vector element.

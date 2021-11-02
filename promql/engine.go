@@ -40,6 +40,7 @@ import (
 	"github.com/prometheus/prometheus/pkg/value"
 	"github.com/prometheus/prometheus/promql/parser"
 	"github.com/prometheus/prometheus/storage"
+	"github.com/prometheus/prometheus/tsdb/chunkenc"
 	"github.com/prometheus/prometheus/util/stats"
 )
 
@@ -1751,13 +1752,24 @@ func (ev *evaluator) matrixIterSlice(it *storage.BufferedSeriesIterator, mint, m
 	}
 	// The seeked sample might also be in the range.
 	if ok {
-		t, v := it.Values()
-		if t == maxt && !value.IsStaleNaN(v) {
-			if ev.currentSamples >= ev.maxSamples {
-				ev.error(ErrTooManySamples(env))
+		if it.ChunkEncoding() == chunkenc.EncHistogram {
+			t, h := it.HistogramValues()
+			if t == maxt && !value.IsStaleNaN(h.Sum) {
+				if ev.currentSamples >= ev.maxSamples {
+					ev.error(ErrTooManySamples(env))
+				}
+				out = append(out, Point{T: t, H: &h})
+				ev.currentSamples++
 			}
-			out = append(out, Point{T: t, V: v})
-			ev.currentSamples++
+		} else {
+			t, v := it.Values()
+			if t == maxt && !value.IsStaleNaN(v) {
+				if ev.currentSamples >= ev.maxSamples {
+					ev.error(ErrTooManySamples(env))
+				}
+				out = append(out, Point{T: t, V: v})
+				ev.currentSamples++
+			}
 		}
 	}
 	return out
