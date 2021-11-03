@@ -114,7 +114,6 @@ func serverOnlyFlag(app *kingpin.Application, name, help string) *kingpin.FlagCl
 			serverOnlyFlags = append(serverOnlyFlags, "--"+name)
 			return nil
 		})
-
 }
 
 // agentOnlyFlag creates agent-only kingpin flag.
@@ -626,7 +625,7 @@ func main() {
 	)
 
 	// This is passed to ruleManager.Update().
-	var externalURL = cfg.web.ExternalURL.String()
+	externalURL := cfg.web.ExternalURL.String()
 
 	reloaders := []reloader{
 		{
@@ -858,7 +857,6 @@ func main() {
 						return nil
 					}
 				}
-
 			},
 			func(err error) {
 				// Wait for any in-progress reloads to complete to avoid
@@ -1108,6 +1106,7 @@ type safePromQLNoStepSubqueryInterval struct {
 func durationToInt64Millis(d time.Duration) int64 {
 	return int64(d / time.Millisecond)
 }
+
 func (i *safePromQLNoStepSubqueryInterval) Set(ev model.Duration) {
 	i.value.Store(durationToInt64Millis(time.Duration(ev)))
 }
